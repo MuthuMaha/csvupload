@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use Illuminate\Support\Facades\Storage;
 
 use App\Contact;
 use App\CsvData;
@@ -8,8 +9,20 @@ use App\Http\Requests\CsvImportRequest;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 
-class ImportController extends Controller
+use Illuminate\Support\Facades\Mail;
+use App\Mail\SendMailable;
+use Illuminate\Bus\Queueable;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
+// use Illuminate\Http\Request;
+use App\Jobs\ExcelUploadJob;
+use App\User;
+
+class ImportController extends Controller implements ShouldQueue
 {
+    use Queueable;
 
     public function getImport()
     {
@@ -18,35 +31,16 @@ class ImportController extends Controller
 
     public function parseImport(CsvImportRequest $request)
     {
-
-        $path = $request->file('csv_file')->getRealPath();
-
-        if ($request->has('header')) {
-            $data = Excel::load($path, function($reader) {})->get()->toArray();
-        } else {
-            $data = array_map('str_getcsv', file($path));
-        }
-
-        if (count($data) > 0) {
-            if ($request->has('header')) {
-                $csv_header_fields = [];
-                foreach ($data[0] as $key => $value) {
-                    $csv_header_fields[] = $key;
-                }
-            }
-            $csv_data = array_slice($data, 0, 2);
-
-            $csv_data_file = CsvData::create([
-                'csv_filename' => $request->file('csv_file')->getClientOriginalName(),
-                'csv_header' => $request->has('header'),
-                'csv_data' => json_encode($data)
-            ]);
-        } else {
-            return redirect()->back();
-        }
-
-        return view('import_fields', compact( 'csv_header_fields', 'csv_data', 'csv_data_file'));
-
+        $id=1;
+        $file=$request->file('csv_file');
+       // $extension = $request->file('csv_data')->guessExtension();
+      $filename = $request->file('csv_file')->getClientOriginalName();
+      // return $filename;
+      if ($file) {
+          $s3 = Storage::disk('local')->put($filename, file_get_contents($file->getRealPath()));;
+      }
+      // $this->dispatch(new UploadImagesThumb($filename, $id));
+      dispatch(new ExcelUploadJob($filename,$id,$request));
     }
 
     public function processImport(Request $request)

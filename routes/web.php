@@ -14,3 +14,11 @@
 Route::get('/', 'ImportController@getImport')->name('import');
 Route::post('/import_parse', 'ImportController@parseImport')->name('import_parse');
 Route::post('/import_process', 'ImportController@processImport')->name('import_process');
+Route::get('image/index', 'ImageController@index');
+Route::post('image/upload', 'ImageController@upload');
+// Route for view/blade file.
+Route::get('importExport', 'MaatwebsiteController@importExport');
+// Route for export/download tabledata to .csv, .xls or .xlsx
+Route::get('downloadExcel/{type}', 'MaatwebsiteController@downloadExcel');
+// Route for import excel data to database.
+Route::post('importExcel', 'MaatwebsiteController@importExcel');
