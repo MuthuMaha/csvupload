@@ -52,7 +52,7 @@ class ProcessImageThumbnails implements ShouldQueue
                 }
                 catch(\Illuminate\Database\QueryException $e){
                     $a[]=$e->getMessage();
-                   Session::flash("error",$e->getMessage());
+                   Session::flash("error","Some Error occured in csv check error file");
                 }
 
                 if(isset($a)){
