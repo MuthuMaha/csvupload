@@ -1,0 +1,4 @@
+id,serial_number,part_no,asset_id,category,sub_category_one,brand,model,attribute_1,attribute_2,attribute_3,attribute_4,supplier_id,comment,wh_id,location,wh_box_id,status,created_at,updated_at,lot_no,main_category,sub_category_two,sub_category_three,prod_serial
+1,2342,AAAAAAABAAAEAQAGYADAAAAAAXX,3213,AAA,AB,Sony,Xperia Xz,32,P4,Black,Japan,1,NULL,1,fg,675675,available,2019-06-28 20:21:41,2019-09-16 12:32:34,K-1903-2,AAA,AA,AE,213432
+2,2342,AAAAAAABAAAEAQAGYADAAAAAAXX,128374,AAA,AB,Sony,Xperia Xz,32,P4,Black,Japan,1,NULL,1,fg,675675,available,2019-06-28 20:21:41,2019-09-16 12:32:34,K-1903-2,AAA,AA,AE,345
+3,2343,AAAAAAABAAAEAQAGYADAAAAAAXX,128374,AAA,AB,Sony,Xperia Xz,32,P4,Black,Japan,1,NULL,1,fg,675675,available,2019-06-28 20:21:41,2019-09-16 12:32:34,K-1903-2,AAA,AA,AE,345

@@ -52,13 +52,14 @@ class MaatwebsiteController extends Controller
             // });
             // return $request->file('import_file')->getRealPath();
             Excel::filter('chunk')->load($request->file('import_file')->getRealPath())->chunk(5300, function($results) {
-            $results->validate( [
+                foreach ($results->toArray() as $key => $value) {
+             $validator=Validator::make($value,[
  
                    'serial_number'=>'required|unique:inventories', 
                     'part_no'=>'required', 
                     'asset_id'=>'required', 
-                    'category'=>'required', 
-                    'sub_category_one'=>'required', 
+                    'category'=>'required|min:1|max:3', 
+                    'sub_category_one'=>'required|min:1|max:3', 
                     'brand'=>'required', 
                     'model'=>'required', 
                     'attribute_1'=>'required', 
@@ -72,15 +73,23 @@ class MaatwebsiteController extends Controller
                     'wh_box_id'=>'required', 
                     'status'=>'required', 
                     'lot_no'=>'required', 
-                    'main_category'=>'required', 
-                    'sub_category_two'=>'required', 
-                    'sub_category_three'=>'required', 
-                    'prod_serial'=>'unique'
+                    'main_category'=>'required|min:1|max:3', 
+                    'sub_category_two'=>'required|min:1|max:3', 
+                    'sub_category_three'=>'required|min:1|max:3', 
+                    'prod_serial'=>'unique:inventories'
     ]);
-        ProcessImageThumbnails::dispatch($results);
+
+       if ($validator->fails()) {
+            Session::flash('error', $validator->messages()->first());
+            return redirect()->back()->withInput();
+       }
+       // dd($validator);
+   }
+        // ProcessImageThumbnails::dispatch();
+         dispatch(new ProcessImageThumbnails($results));
 
 			});
-            Session::flash('success', 'Youe file successfully import in database!!!');
+            // Session::flash('success', 'Youe file successfully import in database!!!');
         }
         else{
         Session::flash('error', 'Your DB table column and Excel first row not matching');

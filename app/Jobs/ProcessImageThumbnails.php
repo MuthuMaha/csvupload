@@ -10,6 +10,8 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Support\Facades\DB;
 use App\Inventory;
+use Session;
+
  use Illuminate\Support\Facades\Validator;
 class ProcessImageThumbnails implements ShouldQueue
 {
@@ -42,7 +44,16 @@ class ProcessImageThumbnails implements ShouldQueue
              $data=[
                     'serial_number'=>$row->serial_number, 'part_no'=>$row->part_no, 'asset_id'=>$row->asset_id, 'category'=>$row->category, 'sub_category_one'=>$row->sub_category_one, 'brand'=>$row->brand, 'model'=>$row->model, 'attribute_1'=>$row->attribute_1, 'attribute_2'=>$row->attribute_2, 'attribute_3'=>$row->attribute_3, 'attribute_4'=>$row->attribute_4, 'supplier_id'=>$row->supplier_id, 'comment'=>$row->comment, 'wh_id'=>$row->wh_id, 'location'=>$row->location, 'wh_box_id'=>$row->wh_box_id, 'status'=>$row->status, 'lot_no'=>$row->lot_no, 'main_category'=>$row->main_category, 'sub_category_two'=>$row->sub_category_two, 'sub_category_three'=>$row->sub_category_three, 'prod_serial'=>$row->prod_serial
                 ];
-                Inventory::create($data);
+                try 
+                {
+                    Inventory::create($data);
+                }
+                catch(\Illuminate\Database\QueryException $e){
+                    $a[]=$e->errorInfo;
+                   Session::flash("error",$e);
+                }
+
+                
 
             }
     }
