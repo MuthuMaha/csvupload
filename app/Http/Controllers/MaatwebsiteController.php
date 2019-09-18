@@ -80,7 +80,7 @@ class MaatwebsiteController extends Controller
     ]);
 
        if ($validator->fails()) {
-            Session::flash('error', $validator->messages()->first());
+            Session::flash('error','In Line Number '.$key.':'.$validator->messages()->first());
             return redirect()->back()->withInput();
        }
        // dd($validator);
