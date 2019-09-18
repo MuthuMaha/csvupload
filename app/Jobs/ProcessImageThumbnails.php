@@ -11,6 +11,8 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Support\Facades\DB;
 use App\Inventory;
 use Session;
+use Illuminate\Support\Facades\Storage;
+
 
  use Illuminate\Support\Facades\Validator;
 class ProcessImageThumbnails implements ShouldQueue
@@ -49,11 +51,13 @@ class ProcessImageThumbnails implements ShouldQueue
                     Inventory::create($data);
                 }
                 catch(\Illuminate\Database\QueryException $e){
-                    $a[]=$e->errorInfo;
-                   Session::flash("error",$e);
+                    $a[]=$e->getMessage();
+                   Session::flash("error",$e->getMessage());
                 }
 
-                
+                if(isset($a)){
+                    Storage::disk('local')->put("error.txt",$a);
+                }
 
             }
     }
